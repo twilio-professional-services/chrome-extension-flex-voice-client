@@ -1,0 +1,21 @@
+{
+  "name": "serverless-chrome-extension-flex-voice-client",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "twilio-run",
+    "deploy": "twilio-run deploy"
+  },
+  "dependencies": {
+    "@twilio/runtime-handler": "2.0.0",
+    "twilio": "^3.56",
+    "twilio-flex-token-validator": "^1.5.8"
+  },
+  "devDependencies": {
+    "twilio-run": "^4.0.0"
+  },
+  "engines": {
+    "node": "18"
+  }
+}

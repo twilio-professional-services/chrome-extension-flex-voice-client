@@ -1,0 +1,21 @@
+{
+  "name": "Flex Voice Client",
+  "version": "1.0",
+  "description": "Shows how to implement a voice client that Flex UI can use to accept calls that survive browser refreshes.",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "icons/default.png"
+  },
+  "background": {
+    "service_worker": "workerThread/worker.js",
+    "type": "module"
+  },
+  "permissions": ["offscreen", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["http://localhost/*"],
+      "js": ["content/content.js"]
+    }
+  ]
+}
