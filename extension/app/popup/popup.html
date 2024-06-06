@@ -1,15 +1,43 @@
 <!DOCTYPE html>
+<html>
+
 <head>
-  <title>Twilio Dialer</title>
-  <link rel="stylesheet" href="popup.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
+
 <body>
-  <div id="root">
-    <p id="status"></p>
-    <p id="flexUIStatus"></p>
-    <button id="hangup">Hangup</button>
-    <button id="restart">Restart</button>
-  </div>
-  <pre id="log"></pre>
-  <script src="popup.js"></script>
+    <div class="container">
+        <div class="header-container">
+            <h2 class="status">Flex Voice Client</h2>
+            <div class="button-container">
+                <button class="hangup-btn" id="HangupBtn"></button>
+                <button class="refresh-btn" id="RestartBtn">Restart</button>
+            </div>
+        </div>
+
+        <div class="tab">
+            <button class="tablinks" id="Status">Status</button>
+            <button class="tablinks" id="Info">Info</button>
+        </div>
+
+        <div id="StatusContent" class="tabcontent">
+            <h2 id="StatusContentStatus"></h2>
+            <p id="StatusContentFriendlyStatus"></p>
+        </div>
+
+        <div id="InfoContent" class="tabcontent">
+            <h2>Configuration</h2>
+            <p id="InfoContentAccountSid"></p>
+            <p id="InfoContentVoiceClientIdentity"></p>
+            <hr>
+            <h2>Tabs</h2>
+            <p id="InfoContentOpenTabs"></p>
+            <p id="InfoContentOpenTabsWithPluginsRunning"></p>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
 </body>
+
+</html>

@@ -1,33 +1,54 @@
 body {
-  margin: 0px;
-  padding: 0px;
-  background: whitesmoke;
-  font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial;
 }
-#root {
-  padding: 25px;
+
+.container {
+    width: 500px;
+    margin: 5px auto;
 }
-#recepient {
-  display: none;
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
 }
-#status {
-  font-size: 20px;
-  margin: 0;
-  white-space: nowrap;
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
 }
-input, button {
-  font-size: 25px;
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
 }
-button {
-  border-radius: 0%;
-  min-width: 105px;
-  margin-top: 10px;
-  display: none;
-  white-space: nowrap;
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
 }
-pre {
-  margin: 5px;
-  background-color: white;
-  max-height: 200px;
-  overflow: auto;
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: white;
+    border: 1px solid #ccc;
 }

@@ -8,6 +8,8 @@ import {
   updateUIActiveCall,
   updateUIVoiceClientState,
   updateUIWaitingForFlex,
+  updateUIAccountSid,
+  updateUIVoiceClientIdentity,
 } from "./popupHelper.js";
 import { FlexIntegration } from "./flexIntegration.js";
 import { resetConfig } from "./config.js";
@@ -24,15 +26,25 @@ const configureMessageHandlers = (restartCallback) => {
       senderPage = "offscreen";
     }
 
+    // restart can come from the popup or from this worker thread
+    if (request.type === "restart") {
+      restartCallback();
+      return;
+    }
+
     switch (senderPage) {
       case "popup":
         switch (request.type) {
           case "getUIState":
             sendResponse({ uiState: getUIStateForPopup() });
             break;
+          case "restart":
+            restartCallback();
+            break;
           default:
             break;
         }
+        break;
 
       case "offscreen":
         switch (request.type) {
@@ -48,10 +60,9 @@ const configureMessageHandlers = (restartCallback) => {
           default:
             break;
         }
+        break;
 
       default:
-      case "restart":
-        restartCallback();
         break;
     }
   });
@@ -112,6 +123,7 @@ function voiceClientStatusHandler(event, flexIntegration) {
 
 const voiceClientIdentityUpdatedHandler = (event, flexIntegration) => {
   flexIntegration.voiceClientIdentity = event.identity;
+  updateUIVoiceClientIdentity(event.identity);
 };
 
 const voiceClientInitErrorHandler = () => {
@@ -158,6 +170,9 @@ const workerThread = () => {
 
     resetConfig();
     updateUIWaitingForFlex(true);
+    updateUIAccountSid(null);
+    updateUIActiveCall(false);
+    updateUIVoiceClientIdentity(null);
 
     start();
   };

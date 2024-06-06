@@ -1,5 +1,9 @@
 import { setConfig, getConfigValue } from "./config.js";
-import { updateUIWaitingForFlex } from "./popupHelper.js";
+import {
+  updateUIWaitingForFlex,
+  updateUIAccountSid,
+  updateUIOpenTabsCount,
+} from "./popupHelper.js";
 
 class UpdatedFlexTokenEvent extends Event {
   constructor(token) {
@@ -125,6 +129,8 @@ export class FlexIntegration extends EventTarget {
         this.#instance
       } setFlexUIConnectionCounts flexUITabs=${flexTabsOpen} flexUITabsWithPluginsRunning=${flexUITabsWithPluginsRunning}`
     );
+
+    updateUIOpenTabsCount(flexTabsOpen, flexUITabsWithPluginsRunning);
   };
 
   handlePluginStartedMessage = (port, accountSid) => {
@@ -169,6 +175,7 @@ export class FlexIntegration extends EventTarget {
             };
 
             setConfig(config);
+            updateUIAccountSid(accountSid);
           }
           this.handlePluginStartedMessage(port, accountSid);
           this.setFlexUIConnectionCounts();
