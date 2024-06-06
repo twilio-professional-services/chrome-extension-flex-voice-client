@@ -97,15 +97,22 @@ const configureVoiceClientExtension = (manager) => {
 };
 
 const sendFlexTokenToVoiceClientExtension = (manager) => {
-  manager.store.getState().flex.session.ssoTokenPayload
-    ? window.postMessage({
-        type: "VOICE_CLIENT_EXTENSION_FLEX_TOKEN",
-        payload: {
-          ...manager.store.getState().flex.session.ssoTokenPayload,
-          accountSid: manager.store.getState().flex.config.sso?.accountSid,
-        },
-      })
-    : null;
+  const ssoTokenPayload = manager.store.getState().flex.session.ssoTokenPayload;
+  const accountSid = manager.store.getState().flex.config.sso?.accountSid;
+
+  if (ssoTokenPayload) {
+    const { token, expiration } = ssoTokenPayload;
+    window.postMessage({
+      type: "VOICE_CLIENT_EXTENSION_FLEX_TOKEN",
+      payload: {
+        token,
+        accountSid,
+        expiration,
+      },
+    });
+  } else {
+    return null;
+  }
 };
 
 const sendHangupCall = () => {
@@ -278,6 +285,10 @@ export default class VoiceClientInExtensionPlugin extends FlexPlugin {
 
     Actions.replaceAction("StopMonitoringCall", (payload, original) => {
       sendHangupCall();
+    });
+
+    manager.event.addListener("afterTokenUpdated", () => {
+      sendFlexTokenToVoiceClientExtension(manager);
     });
   }
 }

@@ -1,4 +1,4 @@
-const instance = Math.random().toString(36).substring(2, 15);
+const instance = Math.random().toString(36).substring(2, 15); //instance for debugging purposes
 let port = chrome.runtime.connect({ name: "flexUI" });
 console.log("Content: starting instance", instance);
 
@@ -13,11 +13,6 @@ port.onC;
 port.onMessage.addListener((message) => {
   switch (message.type) {
     case "HEARTBEAT_TO_FLEX_UI":
-      console.log(
-        "Content: HEARTBEAT_TO_FLEX_UI workerThread -> plugin",
-        instance,
-        message
-      );
       window.postMessage({
         type: "VOICE_CLIENT_EXTENSION_HEARTBEAT",
         payload: message.payload,

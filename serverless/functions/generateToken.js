@@ -18,17 +18,21 @@ exports.handler = TokenValidator(function (context, event, callback) {
       incomingAllow: true,
     });
 
+    const ttl = 24 * 60 * 60; // 24 hour token. Some enterprise customers may require a shorter token expiration time
+
     const token = new Twilio.jwt.AccessToken(
       twilioAccountSid,
       twilioApiKey,
       twilioApiSecret,
       {
         identity,
-        ttl: 24 * 60 * 60,
+        ttl,
       }
     );
 
     token.addGrant(voiceGrant);
+
+    console.log(token.toJwt(), token);
 
     response.appendHeader("Content-Type", "application/json");
     response.setBody({ identity: identity, token: token.toJwt() });

@@ -15,7 +15,7 @@ class UpdatedFlexTokenEvent extends Event {
 export class FlexIntegration extends EventTarget {
   #shuttingDown = false;
   #heartBeatIntervalId = null;
-  #flexToken = null;
+  #flexToken = { token: null, expirationDateTime: null };
   #flexUIPortConnections = new Map();
   #voiceClientIdentity = null;
   #configured = false;
@@ -30,12 +30,18 @@ export class FlexIntegration extends EventTarget {
   }
 
   set flexToken(value) {
-    this.#flexToken = value;
-    this.dispatchEvent(new UpdatedFlexTokenEvent(value));
-  }
+    const { token, expiration } = value;
+    const expirationDateTime = new Date(expiration);
 
-  get flexToken() {
-    return this.#flexToken;
+    if (expirationDateTime > this.#flexToken?.expirationDateTime) {
+      this.#flexToken = { token, expirationDateTime };
+      this.dispatchEvent(new UpdatedFlexTokenEvent(this.#flexToken.token));
+    } else {
+      console.log(
+        "flexIntegration: ignoring token with same or earlier expiration than current token",
+        value
+      );
+    }
   }
 
   set configured(value) {
@@ -198,16 +204,23 @@ export class FlexIntegration extends EventTarget {
           break;
         }
         case "FLEX_TOKEN": {
+          console.log("flexIntegration: FLEX_TOKEN message received", payload);
           const accountSid = this.#flexUIPortConnections.get(port).accountSid;
 
           const configuredAccountSid = getConfigValue("accountSid");
 
+          // ignore flex token from different accounts compared to the initial account for the first flex ui to connect
           if (accountSid !== configuredAccountSid) {
             return;
           }
-          if (!this.flexToken) {
+
+          // first time token received
+          if (!this.flexToken?.token) {
             updateUIWaitingForFlex(false);
-            this.flexToken = payload.token;
+            this.flexToken = {
+              token: payload.token,
+              expiration: payload.expiration,
+            };
           }
           break;
         }

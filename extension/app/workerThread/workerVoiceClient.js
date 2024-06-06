@@ -34,6 +34,7 @@ export class WorkerThreadVoiceClient extends EventTarget {
   #device = null;
   #flexToken = null;
   set updateFlexToken(value) {
+    console.log("voiceClient: updateFlexToken", value);
     this.#flexToken = value;
   }
 
@@ -72,6 +73,16 @@ export class WorkerThreadVoiceClient extends EventTarget {
       }
 
       this.#device = new Twilio.Device(token, { logLevel: 1 });
+
+      // TODO - ideally we should be more proactive about refreshing the token rather than waiting for it to expire.
+      // this would give us some extra resilience in case the token refresh fails we have longer to refresh the token
+      this.#device.on("tokenWillExpire", async (device) => {
+        console.log("voiceClient: tokenWillExpire");
+        const response = await getVoiceClientToken(this.#flexToken);
+        const data = await response.json();
+        const { token } = data;
+        device.updateToken(token);
+      });
 
       this.#device.on("incoming", (call) => {
         // handle early terminated call
@@ -120,7 +131,6 @@ export class WorkerThreadVoiceClient extends EventTarget {
   }
 }
 
-// TODO - Retries
 const maxretryCount = 3;
 const initialRetryTime = 2000;
 const getVoiceClientToken = async (flexToken, retryCount = 0) => {
