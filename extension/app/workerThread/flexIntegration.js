@@ -231,6 +231,15 @@ export class FlexIntegration extends EventTarget {
           });
           break;
 
+        case "SEND_DTMF_DIGITS": // forward on to offscreen
+          chrome.runtime.sendMessage({
+            type: "SEND_DTMF_DIGITS",
+            payload: {
+              digits: payload.digits,
+            },
+          });
+          break;
+
         default: {
           console.error(
             "flexIntegration: flexUI message type not recognized",

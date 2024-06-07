@@ -68,6 +68,10 @@ function proxyMessageToWorkerThread(event) {
       case "VOICE_CLIENT_EXTENSION_HANGUP_CALL":
         port.postMessage({ type: "HANGUP_CALL" });
         break;
+      
+      case "VOICE_CLIENT_EXTENSION_SEND_DTMF_DIGITS":
+        port.postMessage({ type: "SEND_DTMF_DIGITS", payload });
+        break;
 
       case "VOICE_CLIENT_EXTENSION_HEARTBEAT":
       case "VOICE_CLIENT_EXTENSION_CONFIGURED":

@@ -1,14 +1,19 @@
+let call = null;
+let device = null;
+
 async function start() {
   chrome.runtime.onMessage.addListener(
     async (request, sender, sendResponse) => {
       if (request.type === "init-offscreen") {
-        await initDeviceAndAcceptCall(request.token, request.connectToken);
+        await initDeviceAndAcceptCall(request.token, request.connectToken); // from worker thread to init the accept of call
       } else if (request.type === "hangup" && sender.url.includes("popup")) {
         device.disconnectAll(); // from popup
       } else if (request.type === "restart" && sender.url.includes("popup")) {
         device.disconnectAll(); // from popup
       } else if (request.type === "HANGUP_CALL") {
         device.disconnectAll(); // from plugin via worker thread
+      } else if (request.type === "SEND_DTMF_DIGITS") {
+        call.sendDigits(request.payload.digits); // from plugin via worker thread
       }
     }
   );

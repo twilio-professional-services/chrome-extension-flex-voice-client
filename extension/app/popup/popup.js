@@ -38,6 +38,8 @@ const addRestartButtonHandler = () => {
 };
 
 const setStatusContent = (status, friendlyStatus) => {
+  // take waitingForFlexUI and convert it to 'Waiting For Flex UI'
+  // capitalize the first letter of the status
   let statusMessage = status.charAt(0).toUpperCase() + status.slice(1);
 
   function camelCaseToSpacedWord(camelCase) {
@@ -69,6 +71,16 @@ const setInfoContent = (accountSid, voiceClientIdentity, openTabsCount) => {
     openTabsWithPluginsRunningMessage;
 };
 
+const setHangupButton = (enabled) => {
+  const button = document.getElementById("HangupBtn");
+  button.disabled = !enabled;
+  button.innerHTML = enabled ? "Hangup" : "Hangup (no active call)";
+
+  button.onclick = () => {
+    chrome.runtime.sendMessage({ type: "hangup" });
+  };
+};
+
 const setUIState = (uiState) => {
   setStatusContent(uiState.status, uiState.friendlyStatus);
   setHangupButton(uiState.activeCall);
@@ -77,14 +89,6 @@ const setUIState = (uiState) => {
     uiState.voiceClientIdentity,
     uiState.openTabsCount
   );
-  // const { status, activeCall } = uiState || {};
-  // log(`setUIState: ${status} activeCall: ${activeCall}`);
-  // if (activeCall) {
-  //   showButtons("hangup", "restart");
-  // } else {
-  //   showButtons("restart");
-  // }
-  // statusEl.innerHTML = `Status: ${status}`;
 };
 
 const connectToServiceWorker = () => {
@@ -103,16 +107,6 @@ const fetchStartingUIState = () => {
   chrome.runtime.sendMessage({ type: "getUIState" }, (response) => {
     setUIState(response.uiState);
   });
-};
-
-const setHangupButton = (enabled) => {
-  const button = document.getElementById("HangupBtn");
-  button.disabled = !enabled;
-  button.innerHTML = enabled ? "Hangup" : "Hangup (no active call)";
-
-  button.onclick = () => {
-    chrome.runtime.sendMessage({ type: "hangup" });
-  };
 };
 
 // MAIN
