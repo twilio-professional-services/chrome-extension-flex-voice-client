@@ -100,9 +100,9 @@ const removeVoiceClientListeners = (voiceClient) => {
 };
 
 const incomingCallHander = (event) => {
-  const { token, callToken } = event;
+  const { token, connectToken } = event;
   updateUIActiveCall(true);
-  launchOffscreen(token, callToken);
+  launchOffscreen(token, connectToken);
 };
 
 const callEndedHandler = () => {

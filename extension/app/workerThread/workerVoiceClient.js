@@ -1,10 +1,10 @@
 import { getConfigValue } from "./config.js";
 
 class IncomingCallEvent extends Event {
-  constructor(token, callToken) {
+  constructor(token, connectToken) {
     super("incomingCall");
     this.token = token;
-    this.callToken = callToken;
+    this.connectToken = connectToken;
   }
 }
 
