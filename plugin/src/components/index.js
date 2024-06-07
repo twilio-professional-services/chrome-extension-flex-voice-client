@@ -6,31 +6,42 @@ import {
   TaskCanvasHeader,
   TaskHelper,
 } from "@twilio/flex-ui";
+import { isExtensionVoiceClientEnabled } from "../utils/config";
 
-TaskListButtons.Content.add(
-  <CustomEndCallButton key="custom-endcall-task-button" />,
-  {
-    if: (props) => {
-      return (
-        TaskHelper.isInitialOutboundAttemptTask(props.task) ||
-        TaskHelper.isLiveCall(props.task)
-      );
-    },
-  }
-);
+const updateComponents = () => {
+  if (!isExtensionVoiceClientEnabled()) return;
 
-ConnectingOutboundCallCanvas.Content.add(
-  <CustomEndCallButton key="custom-endcall-button" size="large" isCallCanvas />
-);
+  TaskListButtons.Content.add(
+    <CustomEndCallButton key="custom-endcall-task-button" />,
+    {
+      if: (props) => {
+        return (
+          TaskHelper.isInitialOutboundAttemptTask(props.task) ||
+          TaskHelper.isLiveCall(props.task)
+        );
+      },
+    }
+  );
 
-const useCustomCallEndButton = (task) =>
-  !TaskHelper.isInWrapupMode(task) && TaskHelper.isLiveCall(task);
+  ConnectingOutboundCallCanvas.Content.add(
+    <CustomEndCallButton
+      key="custom-endcall-button"
+      size="large"
+      isCallCanvas
+    />
+  );
 
-TaskCanvasHeader.Content.remove("actions", {
-  if: ({ task }) => useCustomCallEndButton(task),
-});
+  const useCustomCallEndButton = (task) =>
+    !TaskHelper.isInWrapupMode(task) && TaskHelper.isLiveCall(task);
 
-TaskCanvasHeader.Content.add(
-  <CustomHangupTaskHeader key="custom-hangup-taskheader" />,
-  { if: ({ task }) => useCustomCallEndButton(task) }
-);
+  TaskCanvasHeader.Content.remove("actions", {
+    if: ({ task }) => useCustomCallEndButton(task),
+  });
+
+  TaskCanvasHeader.Content.add(
+    <CustomHangupTaskHeader key="custom-hangup-taskheader" />,
+    { if: ({ task }) => useCustomCallEndButton(task) }
+  );
+};
+
+updateComponents();

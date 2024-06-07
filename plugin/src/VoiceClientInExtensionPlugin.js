@@ -4,6 +4,7 @@ import { VoiceClientExtensionMonitor } from "./helpers/voiceClientExtensionMonit
 import { checkAndRemoveContactUriPrefix } from "./utils/contactUriUtils";
 import { sendConfigureVoiceClientExtensionMessage } from "./utils/extensionMessages";
 import { listenForExtensionMessages } from "./helpers/extensionEventListener";
+import { isExtensionVoiceClientEnabled } from "./utils/config";
 import "./notifications";
 import "./actions";
 import "./components";
@@ -23,10 +24,7 @@ export default class VoiceClientInExtensionPlugin extends FlexPlugin {
    * @param flex { typeof import('@twilio/flex-ui') }
    */
   async init(flex, manager) {
-    const extensionVoiceClientEnabled =
-      manager.workerClient.attributes?.extensionVoiceClientEnabled;
-
-    if (!extensionVoiceClientEnabled) {
+    if (!isExtensionVoiceClientEnabled()) {
       // if contact_uri is ext_identity then remove ext_ prefix so that local voice client is used
       checkAndRemoveContactUriPrefix(manager);
       return;
