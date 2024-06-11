@@ -6,6 +6,7 @@ import { WorkerThreadVoiceClient } from "./workerVoiceClient.js";
 import {
   getUIStateForPopup,
   updateUIActiveCall,
+  updateUIMutedFlag,
   updateUIVoiceClientState,
   updateUIWaitingForFlex,
   updateUIAccountSid,
@@ -57,6 +58,9 @@ const configureMessageHandlers = (restartCallback) => {
           case "error":
             callEndedHandler();
             break;
+          case "muted":
+            updateUIMutedFlag(request.muted);
+            break;
           default:
             break;
         }
@@ -102,11 +106,13 @@ const removeVoiceClientListeners = (voiceClient) => {
 const incomingCallHander = (event) => {
   const { token, connectToken } = event;
   updateUIActiveCall(true);
+  updateUIMutedFlag(false);
   launchOffscreen(token, connectToken);
 };
 
 const callEndedHandler = () => {
   updateUIActiveCall(false);
+  updateUIMutedFlag(false);
   closeOffscreenDocuments();
 };
 
@@ -172,6 +178,8 @@ const workerThread = () => {
     updateUIWaitingForFlex(true);
     updateUIAccountSid(null);
     updateUIActiveCall(false);
+    updateUIMutedFlag(false);
+
     updateUIVoiceClientIdentity(null);
 
     start();

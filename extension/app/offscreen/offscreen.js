@@ -16,6 +16,14 @@ async function start() {
             case "hangup":
               device.disconnectAll();
               break;
+            case "toggleMute":
+              const isMuted = call.isMuted();
+              chrome.runtime.sendMessage({
+                type: "muted",
+                muted: !isMuted,
+              });
+              call.mute(!isMuted);
+              break;
             case "restart":
               device.disconnectAll();
               break;

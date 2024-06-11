@@ -81,9 +81,21 @@ const setHangupButton = (enabled) => {
   };
 };
 
+const setMuteButton = (enabled, activeCall) => {
+  const button = document.getElementById("MuteBtn");
+  button.disabled = !activeCall;
+
+  button.innerHTML = !enabled ? "Mute" : "Unmute";
+
+  button.onclick = () => {
+    chrome.runtime.sendMessage({ type: "toggleMute" });
+  };
+};
+
 const setUIState = (uiState) => {
   setStatusContent(uiState.status, uiState.friendlyStatus);
   setHangupButton(uiState.activeCall);
+  setMuteButton(uiState.mutedFlag, uiState.activeCall);
   setInfoContent(
     uiState.accountSid,
     uiState.voiceClientIdentity,
@@ -111,6 +123,7 @@ const fetchStartingUIState = () => {
 
 // MAIN
 setHangupButton(false);
+setMuteButton(false, false);
 addTabClickHandlers();
 addRestartButtonHandler();
 selectDefaultTab("Status");

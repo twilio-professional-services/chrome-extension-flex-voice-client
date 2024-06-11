@@ -1,5 +1,6 @@
 let voiceClientState = { status: "initializing", errorMessage: null };
 let activeCall = false;
+let mutedFlag = false;
 let waitingForFlex = true;
 let accountSid = null;
 let voiceClientIdentity = null;
@@ -27,6 +28,13 @@ export const updateUIActiveCall = async (state) => {
   activeCall = state;
   updateUI();
 };
+
+export const updateUIMutedFlag = async (state) => {
+  console.log("popupHelper: updateUIMutedFlag", state);
+  mutedFlag = state;
+  updateUI();
+};
+
 export const updateUIWaitingForFlex = async (state) => {
   console.log("popupHelper: updateUIWaitingForFlex", state);
   waitingForFlex = state;
@@ -78,6 +86,7 @@ export const getUIStateForPopup = () => {
     status,
     friendlyStatus: getFriendlyStatus(status),
     activeCall,
+    mutedFlag,
     errorMessage: voiceClientState.errorMessage,
     accountSid,
     voiceClientIdentity,
