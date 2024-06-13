@@ -14,7 +14,7 @@
   "permissions": ["offscreen", "storage"],
   "content_scripts": [
     {
-      "matches": ["http://localhost/*"],
+      "matches": ["http://localhost:3000/*", "https://flex.twilio.com/*"],
       "js": ["content/content.js"]
     }
   ]

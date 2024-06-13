@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-flex-voice-client",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "postinstall": "flex-plugin pre-script-check"
@@ -8,14 +8,15 @@
   "dependencies": {
     "@twilio-paste/core": "^10.14.0",
     "@twilio-paste/icons": "^5.7.0",
-    "@twilio/flex-plugin-scripts": "6.3.3",
+    "@twilio/flex-plugin-scripts": "7.0.0",
     "dotenv-webpack": "^8.1.0",
     "prop-types": "^15.7.2",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "webpack": "^4"
   },
   "devDependencies": {
-    "@twilio/flex-ui": "2.7.1",
+    "@twilio/flex-ui": "2.7.2",
     "react-test-renderer": "17.0.2"
   }
 }

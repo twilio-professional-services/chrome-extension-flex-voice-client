@@ -1,7 +1,7 @@
 import { extensionVoiceClientPrefix } from "./contactUriUtils";
 
 const voiceClientTokenGeneratorUrl =
-  process.env.FLEX_VOICE_CLIENT_TOKEN_GENERATOR_URL;
+  process.env.FLEX_APP_VOICE_CLIENT_TOKEN_GENERATOR_URL;
 
 export const sendConfigureVoiceClientExtensionMessage = (manager) => {
   const accountSid = manager.store.getState().flex.config.sso?.accountSid;

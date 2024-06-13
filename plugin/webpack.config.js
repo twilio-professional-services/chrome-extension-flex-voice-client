@@ -4,7 +4,7 @@ module.exports = (config, { isProd, isDev, isTest }) => {
    * Customize the webpack by modifying the config object.
    * Consult https://webpack.js.org/configuration for more information
    */
-  // We dynamically change the path to the .env that contains the file corresponding to our profile
+  //We dynamically change the path to the .env that contains the file corresponding to our profile
   let envPath;
   switch (process.env.TWILIO_PROFILE) {
     case "Dev":

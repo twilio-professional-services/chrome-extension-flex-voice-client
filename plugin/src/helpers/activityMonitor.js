@@ -8,7 +8,7 @@ import {
 const manager = Manager.getInstance();
 
 const getVoiceClientOfflineActitivityName = () => {
-  return process.env.TWILIO_OFFLINE_VOICE_CLIENT_ACTIVITY_NAME || "Offline";
+  return process.env.FLEX_APP_OFFLINE_VOICE_CLIENT_ACTIVITY_NAME || "Offline";
 };
 
 const getActivity = () => {
