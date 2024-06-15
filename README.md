@@ -230,3 +230,31 @@ https://developer.chrome.com/docs/webstore/cws-enterprise
 https://support.google.com/chrome/a/answer/9296680
 
 For testing and piloting with agents without a org managed chrome profile providing a packed .crx file or the folder to 'load unpacked' when in developer mode from chrome://extensions/ is the easiest option.
+
+# TODO list
+
+## Audio Device Selection
+
+We don't provide a way to select the audio devices (mic/speaker) to use for the call. This would take some solutioning as the worker thread which is constantly running doesn't have access to the DOM so isn't a good place to drive the logic.
+
+There is a voice Client in Flex UI so having the device selection in Flex UI and having Flex UI send the required device id to the Chrome Extension could be a good workaround to not being able to easily select the device in the extension.
+
+## Mute from Flex UI
+
+The mute toggle button has been removed from the call canvas in Flex UI and a button added to the popup for the Chrome Extension.
+
+Currently the Extension doesn't send the status of the call to the Flex UI plugin and without the current mute state the call canvas doesn't know the mute status.
+
+Should be an easy change to send the call status in the heartbeat but it may be worth considering adding the call status to the main header as well so holding off on implementing this until clearer idea of requirements.
+
+## Voice Client Token Refesh
+
+Rather than wait for the tokenWillExpire event to drive refresh of the token we could track the expiry time and be more proactive in refreshing the token. For example if 1 hour before expiry start trying 30 mins before.
+
+Currently the expiry is hard coded at 24 hours. Some orgs may prefer the expiry time to match the default Flex token expiry (1hr).
+
+If the token can't be fetched we will unregister the voice client but ideally we would keep trying.
+
+## Shutdown Extension if Flex UI not active
+
+If the Flex UI token expires we should restart the extension so it is 'waiting for flex ui'.
