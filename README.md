@@ -254,7 +254,3 @@ Rather than wait for the tokenWillExpire event to drive refresh of the token we 
 Currently the expiry is hard coded at 24 hours. Some orgs may prefer the expiry time to match the default Flex token expiry (1hr).
 
 If the token can't be fetched we will unregister the voice client but ideally we would keep trying.
-
-## Shutdown Extension if Flex UI not active
-
-If the Flex UI token expires we should restart the extension so it is 'waiting for flex ui'.

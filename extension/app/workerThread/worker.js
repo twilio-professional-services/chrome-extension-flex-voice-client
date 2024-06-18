@@ -17,7 +17,7 @@ import { resetConfig } from "./config.js";
 
 const configureMessageHandlers = (restartCallback) => {
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log("worker *** request", request, sender);
+    console.log("worker *** chrome.runtime.onMessage event", request, sender);
 
     const senderUrl = sender.url;
     let senderPage = undefined;
@@ -196,6 +196,11 @@ const workerThread = () => {
       } else {
         voiceClient.updateFlexToken = event.token;
       }
+    });
+
+    flexIntegration.addEventListener("flexTokenExpired", () => {
+      console.log("workerThread: flexTokenExpired event");
+      restart();
     });
 
     flexIntegration.init();

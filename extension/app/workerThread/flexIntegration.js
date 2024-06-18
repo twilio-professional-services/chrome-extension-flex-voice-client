@@ -12,6 +12,12 @@ class UpdatedFlexTokenEvent extends Event {
   }
 }
 
+class FlexTokenExpiredEvent extends Event {
+  constructor() {
+    super("flexTokenExpired");
+  }
+}
+
 export class FlexIntegration extends EventTarget {
   #shuttingDown = false;
   #heartBeatIntervalId = null;
@@ -75,6 +81,14 @@ export class FlexIntegration extends EventTarget {
 
   heartBeatToAllFlexUIs = () => {
     if (!this.#voiceClientIdentity || this.#shuttingDown) return;
+
+    if (
+      this.#flexToken?.expirationDateTime &&
+      this.#flexToken?.expirationDateTime < new Date()
+    ) {
+      console.error("flexIntegration: flex token expired - restarting");
+      this.dispatchEvent(new FlexTokenExpiredEvent());
+    }
 
     this.#flexUIPortConnections.forEach((flexUIPortConnection, port) => {
       if (!flexUIPortConnection.pluginStarted) {
