@@ -15,6 +15,7 @@
   "content_scripts": [
     {
       "matches": ["http://localhost:3000/*", "https://flex.twilio.com/*"],
+      "all_frames": true,
       "js": ["content/content.js"]
     }
   ]
