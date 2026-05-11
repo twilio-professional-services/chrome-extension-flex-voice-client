@@ -61,6 +61,9 @@ const configureMessageHandlers = (restartCallback) => {
           case "muted":
             updateUIMutedFlag(request.muted);
             break;
+          case "permissionsError":
+            requestPermissions();
+            break;
           default:
             break;
         }
@@ -147,15 +150,19 @@ const initVoiceClient = (flexIntegration, initialFlexToken) => {
   return voiceClient;
 };
 
+const requestPermissions = () => {
+  chrome.tabs.create({
+    url: "welcome/welcome.html",
+    active: true,
+  });
+}
+
 // Open welcome page and ask for user media permissions after installation
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason.search(/install/g) === -1) {
     return;
   }
-  chrome.tabs.create({
-    url: "welcome/welcome.html",
-    active: true,
-  });
+  requestPermissions();
 });
 
 const workerThread = () => {

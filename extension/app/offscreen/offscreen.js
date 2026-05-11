@@ -1,13 +1,19 @@
 let call = null;
 let device = null;
 
+let retryDeviceToken = null;
+let retryConnectToken = null;
+
 async function start() {
   chrome.runtime.onMessage.addListener(
     async (request, sender, sendResponse) => {
       const senderUrl = sender.url;
       let senderPage = undefined;
-      if (senderUrl.includes("popup")) {
+      log(senderUrl);
+      if (senderUrl.includes("popup/popup.html")) {
         senderPage = "popup";
+      } else if (senderUrl.includes("welcome/welcome.html")) {
+        senderPage = "welcome";
       }
 
       switch (senderPage) {
@@ -31,7 +37,23 @@ async function start() {
               break;
           }
           break;
-
+        case "welcome":
+          switch (request.type) {
+            case "media-permission-retry":
+              log(`Attempting to accept call again after receiving media permissions`);
+              if (!retryDeviceToken || !retryConnectToken) {
+                log(`Unable to retry accepting call due to missing call token(s)`);
+                break;
+              }
+              await initDeviceAndAcceptCall(
+                retryDeviceToken,
+                retryConnectToken
+              );
+              break;
+            default:
+              break;
+          }
+          break;
         default:
           switch (request.type) {
             case "init-offscreen": // from worker thread to init the accept of call
@@ -57,6 +79,17 @@ async function start() {
 
 async function initDeviceAndAcceptCall(deviceToken, connectToken) {
   try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+    retryDeviceToken = null;
+    retryConnectToken = null;
+  } catch (e) {
+    log(`Requesting permissions due to media permissions error: ${e}`);
+    retryDeviceToken = deviceToken;
+    retryConnectToken = connectToken;
+    chrome.runtime.sendMessage({ type: "permissionsError" });
+    return;
+  }
+  try {
     device = await new Twilio.Device(deviceToken, { logLevel: 1 });
     call = await device.connect({ connectToken }); // connectToken identifies the incoming call event from the voice client in the worker thread
 
@@ -71,6 +104,11 @@ async function initDeviceAndAcceptCall(deviceToken, connectToken) {
     call.on("reject", () => chrome.runtime.sendMessage({ type: "reject" }));
     call.on("error", (e) => {
       log(`Call error event ${e}`);
+      if (e.code == 31401) {
+        log(`Requesting permissions due to media permissions error`);
+        chrome.runtime.sendMessage({ type: "permissionsError" });
+        return;
+      }
       chrome.runtime.sendMessage({ type: "error" });
     });
   } catch (error) {
