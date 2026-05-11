@@ -9,7 +9,6 @@ async function start() {
     async (request, sender, sendResponse) => {
       const senderUrl = sender.url;
       let senderPage = undefined;
-      log(senderUrl);
       if (senderUrl.includes("popup/popup.html")) {
         senderPage = "popup";
       } else if (senderUrl.includes("welcome/welcome.html")) {
@@ -104,11 +103,6 @@ async function initDeviceAndAcceptCall(deviceToken, connectToken) {
     call.on("reject", () => chrome.runtime.sendMessage({ type: "reject" }));
     call.on("error", (e) => {
       log(`Call error event ${e}`);
-      if (e.code == 31401) {
-        log(`Requesting permissions due to media permissions error`);
-        chrome.runtime.sendMessage({ type: "permissionsError" });
-        return;
-      }
       chrome.runtime.sendMessage({ type: "error" });
     });
   } catch (error) {
