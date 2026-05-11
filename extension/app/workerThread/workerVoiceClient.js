@@ -50,7 +50,7 @@ export class WorkerThreadVoiceClient extends EventTarget {
       try {
         this.#device.destroy();
       } catch (e) {
-        console.log("voiceClient: catching shutodwn exception", e);
+        console.log("voiceClient: catching shutdown exception", e);
       }
     }
   }
